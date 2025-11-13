@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+*.env
+session_string.txt
+*.session
+*.db
+*.sqlite3
+venv/
+.dist-info/
+.vscode/
+.idea/
