@@ -1,36 +1,28 @@
 {
-  "name": "ViratMusicBot",
-  "description": "Telegram Music Bot powered by Pyrogram + PyTgCalls",
-  "repository": "https://github.com/khantchirag384-cell/virumuscibot",
+  "name": "ViruMusicBot",
+  "description": "Telegram Music Bot for Voice Chats using Pyrogram & PyTgCalls",
+  "repository": "https://github.com/khantchirag384-cell/virumusicbot",
   "keywords": ["telegram", "music", "bot", "heroku", "python"],
   "buildpacks": [
     { "url": "heroku/python" },
     { "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git" }
   ],
   "env": {
-    "BOT_TOKEN": {
-      "description": "Your Telegram Bot Token from @BotFather",
-      "required": true
-    },
     "API_ID": {
       "description": "Get this from https://my.telegram.org",
       "required": true
     },
     "API_HASH": {
-      "description": "Your Telegram API HASH",
+      "description": "Your Telegram API Hash",
+      "required": true
+    },
+    "BOT_TOKEN": {
+      "description": "Bot token from @BotFather",
       "required": true
     },
     "OWNER_ID": {
       "description": "Your Telegram numeric user ID",
       "required": true
-    },
-    "LOG_CHANNEL": {
-      "description": "Log channel ID (like -100xxxxxxxx)",
-      "required": false
-    },
-    "SESSION_STRING": {
-      "description": "Optional user session string",
-      "required": false
     }
   },
   "formation": {
