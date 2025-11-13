@@ -1,8 +1,11 @@
 # ViratMusicBot 🎵
 
-A simple Telegram Music Bot for groups.
+# 🎧 Viru Music Bot
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/khantchirag384-cell/virumuscibot)
+Telegram Group Voice Chat Music Bot powered by **Pyrogram + PyTgCalls**  
+Deployable directly to **Heroku**!
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/khantchirag384-cell/virumusicbot)
 
 
 
