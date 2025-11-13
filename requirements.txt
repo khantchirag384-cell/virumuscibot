@@ -1,10 +1,9 @@
 pyrogram==2.0.34
 tgcrypto
-git+https://github.com/pytgcalls/pytgcalls.git
 yt-dlp
 youtube-search-python
 python-dotenv
 aiohttp
 ffmpeg-python
-
+git+https://github.com/pytgcalls/pytgcalls.git
 
