@@ -1,52 +1,46 @@
-import os
 from pyrogram import Client, filters
-from pyrogram.types import Message
 from pytgcalls import PyTgCalls
-from music_player import MusicPlayer
-from helpers import is_owner
+from pytgcalls.types import Update
+from pytgcalls.types.input_stream import InputAudioStream
+from yt_dlp import YoutubeDL
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-API_ID = int(os.getenv("API_ID", "0"))
+import os
+
+API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
-OWNER_ID = int(os.getenv("OWNER_ID", "0"))
-LOG_CHANNEL = os.getenv("LOG_CHANNEL")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+OWNER_ID = int(os.getenv("OWNER_ID"))
 
-app = Client("bot", bot_token=BOT_TOKEN, api_id=API_ID, api_hash=API_HASH)
-pytg = PyTgCalls(app)
-player = MusicPlayer(app, pytg)
+bot = Client("musicbot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+call = PyTgCalls(bot)
 
-@app.on_message(filters.command("start") & filters.private)
-async def start(_, message: Message):
-    text = f"👋 Hi {message.from_user.first_name}!\nOwner: `{OWNER_ID}`"
-    await message.reply_text(text)
+@bot.on_message(filters.command("start"))
+async def start(_, message):
+    await message.reply("🎵 **Music Bot is alive!**\nUse /play [song name or URL]")
 
-@app.on_message(filters.command("profile") & filters.private)
-async def profile(_, message: Message):
-    user = message.from_user
-    text = f"Name: {user.first_name}\nUsername: @{user.username if user.username else '—'}\nID: `{user.id}`"
-    await message.reply_text(text)
-
-@app.on_message(filters.command("play") & (filters.group | filters.channel))
-async def play(_, message: Message):
+@bot.on_message(filters.command("play") & filters.user(OWNER_ID))
+async def play(_, message):
     if len(message.command) < 2:
-        return await message.reply_text("Usage: /play <youtube link or search query>")
+        return await message.reply("Usage: /play song_name_or_url")
     query = " ".join(message.command[1:])
-    await message.reply_text(f"Searching for: {query}")
-    await player.play(message.chat.id, query, requester=message.from_user.id)
+    with YoutubeDL({'format': 'bestaudio'}) as ydl:
+        info = ydl.extract_info(query, download=False)
+        url = info['url']
+    chat_id = message.chat.id
+    await call.join_group_call(
+        chat_id,
+        InputAudioStream(url)
+    )
+    await message.reply(f"▶️ Playing: **{info['title']}**")
 
-@app.on_message(filters.command("skip") & (filters.group | filters.channel))
-async def skip(_, message: Message):
-    allowed = await is_owner(app, message.from_user.id, OWNER_ID)
-    if not allowed:
-        return await message.reply_text("Only owner can use this command.")
-    await player.skip(message.chat.id)
-    await message.reply_text("Skipped current track.")
+@bot.on_message(filters.command("stop") & filters.user(OWNER_ID))
+async def stop(_, message):
+    chat_id = message.chat.id
+    await call.leave_group_call(chat_id)
+    await message.reply("⏹️ Stopped playback")
 
-if __name__ == "__main__":
-    app.start()
-    pytg.start()
-    print("Bot started")
-    from pyrogram import idle
-    idle()
-    pytg.stop()
-    app.stop()
+print("🎧 Music bot started...")
+bot.start()
+call.start()
+bot.idle()
+
